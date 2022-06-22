@@ -2,18 +2,46 @@ package main
 
 import (
 	"fmt"
-	"github.com/kelvins/sunrisesunset"
 	"os"
+	"strconv"
 	"time"
+
+	"github.com/kelvins/sunrisesunset"
 )
 
+const version = "0.5.1"
 const format = "20060102"
 
 func main() {
 
+	// 経度緯度の既定値は兵庫県明石市
+	latitude := 35.000
+	longitude := 135.000
+	utcOffset := 9.0
+
 	if len(os.Args) < 2 {
 		fmt.Println("error: not enough args")
 		return
+	}
+
+	if len(os.Args) >= 4 {
+		var l float64
+		var err error
+		l, err = strconv.ParseFloat(os.Args[2], 3)
+		if err == nil {
+			latitude = l
+		}
+		l, err = strconv.ParseFloat(os.Args[3], 3)
+		if err == nil {
+			longitude = l
+		}
+	}
+
+	if len(os.Args) >= 5 {
+		u, err := strconv.ParseFloat(os.Args[4], 3)
+		if err == nil {
+			utcOffset = u
+		}
 	}
 
 	t, err := time.Parse(format, os.Args[1])
@@ -22,11 +50,10 @@ func main() {
 		return
 	}
 
-	// 経度緯度は兵庫県明石市を基準
 	p := sunrisesunset.Parameters{
-		Latitude:  35.000000,
-		Longitude: 135.000000,
-		UtcOffset: 9.0,
+		Latitude:  latitude,
+		Longitude: longitude,
+		UtcOffset: utcOffset,
 		Date:      t,
 	}
 
@@ -35,7 +62,6 @@ func main() {
 
 	// If no error has occurred, print the results
 	if err == nil {
-		fmt.Println(sunrise.Format("15,04,05") + ";" + sunset.Format("15,04,05"))
 		fmt.Println(sunrise.Format("15,04,05") + "," + sunset.Format("15,04,05"))
 	} else {
 		fmt.Println("error: failed to get sunrise/sunset time")
