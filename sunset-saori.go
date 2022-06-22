@@ -36,6 +36,7 @@ func main() {
 	// If no error has occurred, print the results
 	if err == nil {
 		fmt.Println(sunrise.Format("15,04,05") + ";" + sunset.Format("15,04,05"))
+		fmt.Println(sunrise.Format("15,04,05") + "," + sunset.Format("15,04,05"))
 	} else {
 		fmt.Println("error: failed to get sunrise/sunset time")
 	}
